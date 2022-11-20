@@ -14,7 +14,9 @@ describe('Общие требования', () => {
     const page = await browser.$('.Application');
     await page.waitForExist();
 
-    await browser.assertView('plain', '.Application');
+    await browser.assertView('plain', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Вёрстка должна адаптироваться под ширину экрана 1200px', async ({ browser }) => {
     await browser.setWindowSize(1200, 1000);
@@ -23,7 +25,9 @@ describe('Общие требования', () => {
     const page = await browser.$('.Application');
     await page.waitForExist();
 
-    await browser.assertView('plain', '.Application');
+    await browser.assertView('plain', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Вёрстка должна адаптироваться под ширину экрана 992px', async ({ browser }) => {
     await browser.setWindowSize(992, 1000);
@@ -32,7 +36,9 @@ describe('Общие требования', () => {
     const page = await browser.$('.Application');
     await page.waitForExist();
 
-    await browser.assertView('plain', '.Application');
+    await browser.assertView('plain', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Вёрстка должна адаптироваться под ширину экрана 768px', async ({ browser }) => {
     await browser.setWindowSize(768, 1000);
@@ -41,7 +47,9 @@ describe('Общие требования', () => {
     const page = await browser.$('.Application');
     await page.waitForExist();
 
-    await browser.assertView('plain', '.Application');
+    await browser.assertView('plain', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Вёрстка должна адаптироваться под ширину экрана 576px', async ({ browser }) => {
     await browser.setWindowSize(576, 1000);
@@ -50,7 +58,9 @@ describe('Общие требования', () => {
     const page = await browser.$('.Application');
     await page.waitForExist();
 
-    await browser.assertView('plain', '.Application');
+    await browser.assertView('plain', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('На ширине меньше 576px навигационное меню должно скрываться за "гамбургер"', async ({ browser }) => {
     await browser.setWindowSize(575, 1000);

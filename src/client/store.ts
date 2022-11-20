@@ -12,40 +12,62 @@ import {
 import { CartApi, ExampleApi } from './api';
 
 export interface ApplicationState {
-    products?: ProductShortInfo[];
-    details: Record<number, Product>;
-    cart: CartState;
-    latestOrderId?: number;
+  products?: ProductShortInfo[];
+  details: Record<number, Product>;
+  cart: CartState;
+  latestOrderId?: number;
 }
 
 export interface EpicDeps {
-    api: ExampleApi;
-    cart: CartApi;
+  api: ExampleApi;
+  cart: CartApi;
 }
 
 export type ExampleEpic = (action$: Observable<Action>, store$: StateObservable<ApplicationState>, deps: EpicDeps) => Observable<Action>;
 
-const DEFAULT_STATE: ApplicationState = { details: {}, cart: {} };
+const DEFAULT_STATE: ApplicationState = {
+  details: {},
+  cart: {},
+};
 
 // actions
 export const productsLoad = () => ({ type: 'PRODUCTS_LOAD' } as const);
-export const productsLoaded = (products: ProductShortInfo[]) => ({ type: 'PRODUCTS_LOADED', products } as const);
-export const productDetailsLoad = (id: number) => ({ type: 'PRODUCT_DETAILS_LOAD', id } as const);
-export const productDetailsLoaded = (details: Product) => ({ type: 'PRODUCT_DETAILS_LOADED', details } as const);
-export const addToCart = (product: Product) => ({ type: 'ADD_TO_CART', product } as const);
+export const productsLoaded = (products: ProductShortInfo[]) => ({
+  type: 'PRODUCTS_LOADED',
+  products,
+} as const);
+export const productDetailsLoad = (id: number) => ({
+  type: 'PRODUCT_DETAILS_LOAD',
+  id,
+} as const);
+export const productDetailsLoaded = (details: Product) => ({
+  type: 'PRODUCT_DETAILS_LOADED',
+  details,
+} as const);
+export const addToCart = (product: Product) => ({
+  type: 'ADD_TO_CART',
+  product,
+} as const);
 export const clearCart = () => ({ type: 'CLEAR_CART' } as const);
-export const checkout = (form: CheckoutFormData, cart: CartState) => ({ type: 'CHECKOUT', form, cart } as const);
-export const checkoutComplete = (orderId: number) => ({ type: 'CHECKOUT_COMPLETE', orderId } as const);
+export const checkout = (form: CheckoutFormData, cart: CartState) => ({
+  type: 'CHECKOUT',
+  form,
+  cart,
+} as const);
+export const checkoutComplete = (orderId: number) => ({
+  type: 'CHECKOUT_COMPLETE',
+  orderId,
+} as const);
 
 export type Action =
-    ReturnType<typeof checkout> |
-    ReturnType<typeof checkoutComplete> |
-    ReturnType<typeof addToCart> |
-    ReturnType<typeof clearCart> |
-    ReturnType<typeof productsLoad> |
-    ReturnType<typeof productsLoaded> |
-    ReturnType<typeof productDetailsLoad> |
-    ReturnType<typeof productDetailsLoaded>;
+  ReturnType<typeof checkout> |
+  ReturnType<typeof checkoutComplete> |
+  ReturnType<typeof addToCart> |
+  ReturnType<typeof clearCart> |
+  ReturnType<typeof productsLoad> |
+  ReturnType<typeof productsLoaded> |
+  ReturnType<typeof productDetailsLoad> |
+  ReturnType<typeof productDetailsLoaded>;
 
 // reducer
 
@@ -65,11 +87,19 @@ function createRootReducer(state: Partial<ApplicationState>) {
         break;
       }
       case 'ADD_TO_CART':
-        const { id, name, price } = action.product;
+        const {
+          id,
+          name,
+          price,
+        } = action.product;
 
         if (process.env.BUG_ID !== '7') {
           if (!draft.cart[id]) {
-            draft.cart[id] = { name, count: 0, price };
+            draft.cart[id] = {
+              name,
+              count: 0,
+              price,
+            };
           }
 
           draft.cart[id].count++;
@@ -94,16 +124,18 @@ function createRootReducer(state: Partial<ApplicationState>) {
 // epics
 const productsLoadEpic: ExampleEpic = (action$, store$, { api }) => action$.pipe(
   ofType('PRODUCTS_LOAD'),
-  mergeMap((a: ReturnType<typeof productsLoad>) => from(api.getProducts()).pipe(
-    map((products) => productsLoaded(products.data)),
-  )),
+  mergeMap((a: ReturnType<typeof productsLoad>) => from(api.getProducts())
+    .pipe(
+      map((products) => productsLoaded(products.data)),
+    )),
 );
 
 const productDetailsLoadEpic: ExampleEpic = (action$, store$, { api }) => action$.pipe(
   ofType('PRODUCT_DETAILS_LOAD'),
-  mergeMap((a: ReturnType<typeof productDetailsLoad>) => from(api.getProductById(a.id)).pipe(
-    map((products) => productDetailsLoaded(products.data)),
-  )),
+  mergeMap((a: ReturnType<typeof productDetailsLoad>) => from(api.getProductById(a.id))
+    .pipe(
+      map((products) => productDetailsLoaded(products.data)),
+    )),
 );
 
 const shoppingCartEpic: ExampleEpic = (action$, store$, { cart }) => action$.pipe(
@@ -119,14 +151,18 @@ const shoppingCartEpic: ExampleEpic = (action$, store$, { cart }) => action$.pip
 
 const checkoutEpic: ExampleEpic = (action$, store$, { api }) => action$.pipe(
   ofType('CHECKOUT'),
-  mergeMap(({ form, cart }: ReturnType<typeof checkout>) => {
+  mergeMap(({
+    form,
+    cart,
+  }: ReturnType<typeof checkout>) => {
     if (process.env.BUG_ID === '5') {
       return EMPTY;
     }
 
-    return from(api.checkout(form, cart)).pipe(
-      map((res) => checkoutComplete(res.data.id)),
-    );
+    return from(api.checkout(form, cart))
+      .pipe(
+        map((res) => checkoutComplete(res.data.id)),
+      );
   }),
 );
 
@@ -143,7 +179,10 @@ export function initStore(api: ExampleApi, cart: CartApi) {
   });
 
   const epicMiddleware = createEpicMiddleware<Action, Action, ApplicationState, EpicDeps>({
-    dependencies: { api, cart },
+    dependencies: {
+      api,
+      cart,
+    },
   });
 
   const store = createStore(rootReducer, applyMiddleware(epicMiddleware));

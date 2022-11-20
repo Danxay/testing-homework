@@ -9,18 +9,24 @@ describe('Cтраницы главная, условия доставки, ко�
     await browser.setWindowSize(1400, 1000)
 
     await browser.url(`#?bug_id=${bugId}`);
-    await browser.assertView('home', '.Application');
+    await browser.assertView('home', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Страница условия доставки', async ({ browser }) => {
     await browser.setWindowSize(1400, 1000)
 
     await browser.url(`delivery?bug_id=${bugId}`);
-    await browser.assertView('delivery', '.Application');
+    await browser.assertView('delivery', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
   it('Страница контакты', async ({ browser }) => {
     await browser.setWindowSize(1400, 1000)
 
     await browser.url(`contacts?bug_id=${bugId}`);
-    await browser.assertView('contacts', '.Application');
+    await browser.assertView('contacts', '.Application', {
+      ignoreElements: ['.navbar .container'],
+    });
   })
 })

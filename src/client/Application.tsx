@@ -37,7 +37,10 @@ export const Application: FC = () => {
       <Helmet titleTemplate="%s — Example store" />
       <nav className="navbar navbar-expand-sm navbar-light bg-light">
         <div className="container">
-          <Link data-testid="Brand" className={bem('Brand', ['navbar-brand'])} to="/">Example store</Link>
+          <Link data-testid="Brand" className={bem('Brand', ['navbar-brand'])} to="/">
+            Example
+            store
+          </Link>
           <button
             className={bem('Toggler', ['navbar-toggler'])}
             aria-label="Toggle navigation"
